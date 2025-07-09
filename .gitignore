@@ -1,0 +1,27 @@
+# OS / editor junk
+.DS_Store
+.idea/
+.vscode/
+
+# Go build output
+*.exe
+*.out
+*.log
+*.test
+
+# Temporary files
+tmp/
+tmp.*
+*.swp
+
+# Air live reload config
+air.log
+air.conf
+.air.toml
+
+# Dependency directories
+vendor/
+
+# Secrets
+.env
+*.env
