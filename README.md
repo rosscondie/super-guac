@@ -27,6 +27,32 @@ I'm using this project to:
 
 ---
 
+## 📁 Project Structure
+
+```txt
+.
+├── content
+│   ├── first-post.md
+│   └── second-post.md
+├── data
+│   ├── photos.go
+│   ├── post_reader.go
+│   └── posts.go
+├── go.mod
+├── go.sum
+├── handlers
+│   ├── photos.go
+│   └── posts.go
+├── main.go
+├── public
+│   ├── images
+│   └── index.html
+├── README.md
+└── routes
+    ├── photos.go
+    └── posts.go
+```
+
 ## 🔜 TODO
 
 - [X] Add `GET /api/photos` to return image metadata for a photo gallery
