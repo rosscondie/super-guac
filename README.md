@@ -29,9 +29,9 @@ I'm using this project to:
 
 ## 🔜 TODO
 
-- [ ] Add `GET /api/photos` to return image metadata for a photo gallery
-- [ ] Serve images via `GET /images/:filename`
-- [ ] Use frontmatter in Markdown for post titles, dates, and tags
+- [X] Add `GET /api/photos` to return image metadata for a photo gallery
+- [X] Serve images via `GET /images/:filename`
+- [X] Use frontmatter in Markdown for post titles, dates, and tags
 - [ ] Start building a React frontend that fetches from this API
 - [ ] Implement a basic admin dashboard to upload new posts/photos (eventually)
 - [ ] Deploy the site publicly for viewing and learning showcase

@@ -14,6 +14,11 @@ tmp/
 tmp.*
 *.swp
 
+# Ignore full image folder
+public/images/*
+# ...but keep the folder itself
+!public/images/.gitkeep
+
 # Air live reload config
 air.log
 air.conf
