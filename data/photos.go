@@ -8,12 +8,6 @@ import (
 	"strings"
 )
 
-type Photo struct {
-	Filename string `json:"filename"`
-	URL      string `json:"url"`
-	Size     int64  `json:"size"` // bytes
-}
-
 func GetAllPhotos() ([]Photo, error) {
 	var photos []Photo
 

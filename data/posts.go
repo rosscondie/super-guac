@@ -9,19 +9,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type Post struct {
-	Title   string `json:"title"`
-	Slug    string `json:"slug"`
-	Summary string `json:"summary"`
-	Date    string `json:"date"`
-}
-
-type frontmatter struct {
-	Title   string `yaml:"title"`
-	Summary string `yaml:"summary"`
-	Date    string `yaml:"date"`
-}
-
 // GetAllPosts reads the content/ directory and parses the frontmatter from Markdown files
 func GetAllPosts() []Post {
 	var posts []Post
