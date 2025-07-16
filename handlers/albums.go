@@ -94,3 +94,27 @@ func DeletePhotoFromAlbumHandler(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
+
+func UpdateAlbumMetadataHandler(c *fiber.Ctx) error {
+	slug := c.Params("slug")
+
+	var metadata data.AlbumMetadata
+	if err := c.BodyParser(&metadata); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid JSON",
+		})
+	}
+
+	// Set the slug in metadata to match the URL param (in case it's missing or inconsistent)
+	metadata.Slug = slug
+
+	if err := data.UpdateAlbumMetadata(slug, metadata); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Album metadata updated",
+	})
+}

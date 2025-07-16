@@ -30,3 +30,10 @@ type Album struct {
 	Slug  string `json:"slug"`
 	Cover string `json:"cover,omitempty"`
 }
+
+type AlbumMetadata struct {
+	Title       string `json:"title"`
+	Slug        string `json:"slug"`
+	Description string `json:"description"`
+	Cover       string `json:"cover"`
+}

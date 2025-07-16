@@ -16,4 +16,6 @@ func RegisterAlbumRoutes(app *fiber.App) {
 
 	album.Delete("/:slug", handlers.DeleteAlbumHandler)
 	album.Delete("/:slug/photos/:filename", handlers.DeletePhotoFromAlbumHandler)
+
+	album.Put("/:slug", handlers.UpdateAlbumMetadataHandler)
 }

@@ -14,9 +14,10 @@ import (
 // GetAllAlbums reads the content/photos directory and returns a list of albums with their cover images
 func GetAllAlbums() ([]Album, error) {
 	var albums []Album
-	c := cases.Title(language.English) // create title casing transformer
+	c := cases.Title(language.English)
 
-	entries, err := os.ReadDir("content/photos")
+	root := "content/photos"
+	entries, err := os.ReadDir(root)
 	if err != nil {
 		return nil, err
 	}
@@ -26,27 +27,48 @@ func GetAllAlbums() ([]Album, error) {
 			continue
 		}
 
-		albumName := entry.Name()
-		albumPath := filepath.Join("content/photos", albumName)
+		slug := entry.Name()
+		albumPath := filepath.Join(root, slug)
+		metadataPath := filepath.Join(albumPath, "album.json")
 
-		files, _ := os.ReadDir(albumPath)
+		album := Album{
+			Slug: slug,
+		}
 
-		var cover string
-		for _, f := range files {
-			if !f.IsDir() {
-				ext := strings.ToLower(filepath.Ext(f.Name()))
-				if ext == ".jpg" || ext == ".jpeg" || ext == ".png" {
-					cover = f.Name()
-					break
+		// Try to read album.json
+		if data, err := os.ReadFile(metadataPath); err == nil {
+			var meta AlbumMetadata
+			if err := json.Unmarshal(data, &meta); err == nil {
+				// Use values from album.json
+				if meta.Title != "" {
+					album.Name = meta.Title
+				}
+				if meta.Cover != "" {
+					album.Cover = meta.Cover
 				}
 			}
 		}
 
-		albums = append(albums, Album{
-			Name:  c.String(strings.ReplaceAll(albumName, "-", " ")),
-			Slug:  albumName,
-			Cover: fmt.Sprintf("/photos/%s/%s", albumName, cover),
-		})
+		// Fallback if Name is still empty
+		if album.Name == "" {
+			album.Name = c.String(strings.ReplaceAll(slug, "-", " "))
+		}
+
+		// Fallback if Cover is still empty
+		if album.Cover == "" {
+			files, _ := os.ReadDir(albumPath)
+			for _, f := range files {
+				if !f.IsDir() {
+					ext := strings.ToLower(filepath.Ext(f.Name()))
+					if ext == ".jpg" || ext == ".jpeg" || ext == ".png" {
+						album.Cover = fmt.Sprintf("/photos/%s/%s", slug, f.Name())
+						break
+					}
+				}
+			}
+		}
+
+		albums = append(albums, album)
 	}
 
 	return albums, nil
@@ -131,6 +153,54 @@ func DeletePhotoFromAlbum(slug, filename string) error {
 
 	if err := os.Remove(photoPath); err != nil {
 		return fmt.Errorf("failed to delete photo: %w", err)
+	}
+
+	return nil
+}
+
+// UpdateAlbumMetadata updates (or creates) the album.json file in the album folder
+func UpdateAlbumMetadata(slug string, metadata AlbumMetadata) error {
+	albumDir := filepath.Join("content", "photos", slug)
+
+	// Ensure the album folder exists
+	if _, err := os.Stat(albumDir); os.IsNotExist(err) {
+		return fmt.Errorf("album folder %s does not exist", slug)
+	}
+
+	// Normalize and validate cover image
+	if metadata.Cover != "" {
+		filename := filepath.Base(metadata.Cover)
+
+		files, err := os.ReadDir(albumDir)
+		if err != nil {
+			return fmt.Errorf("failed to read album folder: %v", err)
+		}
+
+		var found bool
+		for _, file := range files {
+			if !file.IsDir() && strings.EqualFold(file.Name(), filename) {
+				// Use the actual casing from disk
+				metadata.Cover = fmt.Sprintf("/photos/%s/%s", slug, file.Name())
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			return fmt.Errorf("cover image %s does not exist in album %s", filename, slug)
+		}
+	}
+
+	// Marshal metadata into JSON
+	jsonBytes, err := json.MarshalIndent(metadata, "", "  ")
+	if err != nil {
+		return fmt.Errorf("failed to marshal album metadata: %v", err)
+	}
+
+	// Write album.json to disk
+	albumFilePath := filepath.Join(albumDir, "album.json")
+	if err := os.WriteFile(albumFilePath, jsonBytes, 0644); err != nil {
+		return fmt.Errorf("failed to write album.json: %v", err)
 	}
 
 	return nil
