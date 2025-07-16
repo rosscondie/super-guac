@@ -17,10 +17,12 @@ func main() {
 	}))
 
 	app.Static("/", "./public")
+	app.Static("/photos", "./content/photos")
 
 	// Mount routes
 	routes.RegisterPhotoRoutes(app)
 	routes.RegisterPostRoutes(app)
+	routes.RegisterAlbumRoutes(app)
 
 	err := app.Listen(":3000")
 	if err != nil {

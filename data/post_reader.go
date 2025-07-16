@@ -12,7 +12,7 @@ import (
 )
 
 func GetPostBySlug(slug string) (*PostContent, error) {
-	filename := filepath.Join("content", slug+".md")
+	filename := filepath.Join("content/blog-posts/", slug+".md")
 
 	mdBytes, err := os.ReadFile(filename)
 	if err != nil {

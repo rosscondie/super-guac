@@ -11,7 +11,7 @@ import (
 func GetAllPhotos() ([]Photo, error) {
 	var photos []Photo
 
-	err := filepath.WalkDir("public/images", func(path string, d fs.DirEntry, err error) error {
+	err := filepath.WalkDir("content/photos", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -28,7 +28,7 @@ func GetAllPhotos() ([]Photo, error) {
 
 		photos = append(photos, Photo{
 			Filename: d.Name(),
-			URL:      "/images/" + d.Name(),
+			URL:      "/photos/" + d.Name(),
 			Size:     getFileSize(path),
 		})
 

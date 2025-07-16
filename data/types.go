@@ -24,3 +24,9 @@ type Photo struct {
 	URL      string `json:"url"`
 	Size     int64  `json:"size"` // bytes
 }
+
+type Album struct {
+	Name  string `json:"name"`
+	Slug  string `json:"slug"`
+	Cover string `json:"cover,omitempty"`
+}

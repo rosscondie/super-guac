@@ -13,7 +13,7 @@ import (
 func GetAllPosts() []Post {
 	var posts []Post
 
-	files, err := os.ReadDir("content")
+	files, err := os.ReadDir("content/blog-posts")
 	if err != nil {
 		fmt.Println("Failed to read content directory:", err)
 		return posts
@@ -25,7 +25,7 @@ func GetAllPosts() []Post {
 		}
 
 		slug := strings.TrimSuffix(file.Name(), ".md")
-		fullPath := filepath.Join("content", file.Name())
+		fullPath := filepath.Join("content/blog-posts", file.Name())
 
 		content, err := os.ReadFile(fullPath)
 		if err != nil {
@@ -60,6 +60,6 @@ func GetAllPosts() []Post {
 		posts = append(posts, post)
 	}
 
-	fmt.Println("Loaded", len(posts), "posts from content/")
+	fmt.Println("Loaded", len(posts), "posts from content/blog-posts")
 	return posts
 }
