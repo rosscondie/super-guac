@@ -1,14 +1,22 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 	"github.com/rosscondie/photo-blog/routes"
 )
 
 func main() {
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Warning: .env file not loaded")
+	}
+
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
@@ -23,8 +31,9 @@ func main() {
 	routes.RegisterPhotoRoutes(app)
 	routes.RegisterPostRoutes(app)
 	routes.RegisterAlbumRoutes(app)
+	routes.RegisterAuthRoutes(app)
 
-	err := app.Listen(":3000")
+	err = app.Listen(":3000")
 	if err != nil {
 		panic(err)
 	}
