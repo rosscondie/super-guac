@@ -20,8 +20,10 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: os.Getenv("FRONTEND_ORIGIN"),
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowOrigins:     os.Getenv("FRONTEND_ORIGIN"),
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
+		AllowCredentials: true,
 	}))
 
 	app.Static("/", "./public")
