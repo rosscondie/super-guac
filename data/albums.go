@@ -158,6 +158,40 @@ func DeletePhotoFromAlbum(slug, filename string) error {
 	return nil
 }
 
+func GetAlbumMetadata(slug string) (AlbumMetadata, error) {
+	var meta AlbumMetadata
+	albumPath := filepath.Join("content/photos", slug)
+	metadataPath := filepath.Join(albumPath, "album.json")
+
+	if _, err := os.Stat(albumPath); os.IsNotExist(err) {
+		return meta, fmt.Errorf("album does not exist")
+	}
+
+	if bytes, err := os.ReadFile(metadataPath); err == nil {
+		_ = json.Unmarshal(bytes, &meta)
+	}
+
+	// Fallbacks for missing fields
+	if meta.Title == "" {
+		meta.Title = strings.Title(strings.ReplaceAll(slug, "-", " "))
+	}
+
+	if meta.Slug == "" {
+		meta.Slug = slug
+	}
+
+	if meta.Description == "" {
+		meta.Description = ""
+	}
+
+	// If needed, default cover to empty string instead of crashing frontend
+	if meta.Cover == "" {
+		meta.Cover = ""
+	}
+
+	return meta, nil
+}
+
 // UpdateAlbumMetadata updates (or creates) the album.json file in the album folder
 func UpdateAlbumMetadata(slug string, metadata AlbumMetadata) error {
 	albumDir := filepath.Join("content", "photos", slug)

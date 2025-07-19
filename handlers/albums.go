@@ -27,7 +27,18 @@ func GetAlbumBySlug(c *fiber.Ctx) error {
 			"error": "Album not found",
 		})
 	}
-	return c.JSON(photos)
+
+	metadata, err := data.GetAlbumMetadata(slug)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Album metadata not found",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"photos":   photos,
+		"metadata": metadata,
+	})
 }
 
 func CreateAlbum(c *fiber.Ctx) error {
